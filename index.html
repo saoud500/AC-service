@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ac service</title>
+<style>
+  /* Reset */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f4f8;
+    color: #1f2937;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  /* Navbar */
+  nav {
+    position: sticky;
+    top: 0;
+    background: #1e40af;
+    color: white;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+    z-index: 1000;
+  }
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 1rem;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    height: 56px;
+  }
+  nav li {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 0.25rem;
+    display: inline-block;
+    transition: border-bottom 0.3s ease;
+  }
+  nav a:hover,
+  nav a:focus {
+    border-bottom: 2px solid #3b82f6;
+    outline: none;
+  }
+  nav a.active {
+    border-bottom: 3px solid #60a5fa;
+  }
+
+  header {
+    background: linear-gradient(90deg, #2563eb, #1e40af);
+    color: #fff;
+    text-align: center;
+    padding: 4rem 1rem 5rem 1rem;
+    box-shadow: 0 8px 18px rgb(37 99 235 / 0.3);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    line-height: 1.1;
+  }
+  header p {
+    margin-top: 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    opacity: 0.9;
+  }
+  main {
+    flex: 1;
+    max-width: 900px;
+    margin: -5rem auto 3rem;
+    background: transparent;
+    border-radius: 16px;
+    padding: 0 0 3rem;
+  }
+  section {
+    background: white;
+    box-shadow: 0 20px 40px rgb(37 99 235 / 0.1);
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    margin: 2rem 1rem;
+  }
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #2563eb;
+    border-bottom: 3px solid #2563eb;
+    width: max-content;
+    padding-bottom: 0.3rem;
+    font-weight: 700;
+  }
+  /* Services grid */
+  .services-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 1.4rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .services-list li {
+    background: #eff6ff;
+    border-radius: 12px;
+    padding: 1.8rem 1.2rem;
+    box-shadow: 0 4px 15px rgb(37 99 235 / 0.15);
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #1e293b;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s ease;
+  }
+  .services-list li:hover {
+    background: #2563eb;
+    color: white;
+    box-shadow: 0 8px 24px rgb(37 99 235 / 0.4);
+  }
+
+  /* Contact Form */
+  form#contact-form {
+    max-width: 500px;
+    margin: 0 auto;
+    display: grid;
+    gap: 1.25rem;
+  }
+  form#contact-form label {
+    font-weight: 700;
+    color: #1e293b;
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+  }
+  form#contact-form input,
+  form#contact-form select,
+  form#contact-form textarea {
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+    font-size: 1rem;
+    border: 2px solid #cbd5e1;
+    border-radius: 10px;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+  }
+  form#contact-form input:focus,
+  form#contact-form select:focus,
+  form#contact-form textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    background-color: #eff6ff;
+  }
+  form#contact-form textarea {
+    resize: vertical;
+    min-height: 90px;
+  }
+  form#contact-form button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    font-weight: 700;
+    font-size: 1.15rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    justify-self: center;
+    max-width: 160px;
+  }
+  form#contact-form button:hover,
+  form#contact-form button:focus {
+    background-color: #1d4ed8;
+    outline: none;
+  }
+
+  /* Confirmation Message */
+  #confirmation-message {
+    max-width: 500px;
+    margin: 1rem auto 0 auto;
+    padding: 1rem 1.5rem;
+    background-color: #dcfce7;
+    border: 1.5px solid #22c55e;
+    color: #166534;
+    font-weight: 700;
+    border-radius: 12px;
+    display: none;
+    text-align: center;
+    font-size: 1.1rem;
+  }
+  /* Contact details styling */
+  .contact-details {
+    max-width: 500px;
+    margin: 0 auto 2rem auto;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2563eb;
+    text-align: center;
+  }
+  .contact-details p {
+    margin: 0.25rem 0;
+  }
+
+
+  footer {
+    background: #f0f4f8;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    font-size: 0.9rem;
+    color: #475569;
+    user-select: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    nav ul {
+      gap: 1rem;
+    }
+    header h1 {
+      font-size: 2.3rem;
+    }
+    main {
+      margin: -4rem 1rem 3rem;
+      padding: 0 0 2rem;
+    }
+    section {
+      margin: 1.5rem 0.5rem;
+      padding: 2rem 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+<nav aria-label="Primary navigation">
+  <ul>
+    <li><a href="#home" id="nav-home">Home</a></li>
+    <li><a href="#services" id="nav-services">Services</a></li>
+    <li><a href="#contact" class="active" id="nav-contact">Contact</a></li>
+  </ul>
+</nav>
+
+<header id="home">
+  <h1>Mohd Alfaiz</h1>
+  <p>AC Service &amp; Repairing</p>
+  <p style="max-width: 640px; margin: 1rem auto 0; font-size: 1.2rem; line-height: 1.5; color: #e0e7ff;">
+    Welcome to Mohd Alfaiz AC Service &amp; Repairing. We specialize in providing professional air conditioning services including installation, maintenance, repairs, gas refills, and emergency support to keep your environment cool and comfortable.
+  </p>
+</header>
+
+<main>
+  <section id="services" aria-labelledby="services-title">
+    <h2 id="services-title">Our Services</h2>
+    <ul class="services-list" role="list">
+      <li>AC Cleaning &amp; Maintenance</li>
+      <li>AC Repair &amp; Troubleshooting</li>
+      <li>AC Installation &amp; Replacement</li>
+      <li>Gas Refilling &amp; Leak Repair</li>
+      <li>Compressor Repair &amp; Replacement</li>
+      <li>Thermostat &amp; Electrical Repair</li>
+      <li>Emergency AC Services</li>
+      <li>Preventive Maintenance Contracts</li>
+    </ul>
+  </section>
+
+  <section id="contact" aria-labelledby="contact-title">
+    <h2 id="contact-title">Request a Service</h2>
+    <form id="contact-form" novalidate>
+      <label for="customer-name">Full Name *</label>
+      <input type="text" id="customer-name" name="name" placeholder="Your full name" required autocomplete="name" />
+
+      <label for="customer-phone">Phone Number *</label>
+      <input type="tel" id="customer-phone" name="phone" placeholder="+1 234 567 8901" required autocomplete="tel" pattern="[+0-9\s\-]+" />
+
+      <label for="customer-email">Email Address *</label>
+      <input type="email" id="customer-email" name="email" placeholder="you@example.com" required autocomplete="email" />
+
+      <label for="service-type">Service Type *</label>
+      <select id="service-type" name="service" required>
+        <option value="" disabled selected>Select a service</option>
+        <option value="AC Cleaning &amp; Maintenance">AC Cleaning &amp; Maintenance</option>
+        <option value="AC Repair &amp; Troubleshooting">AC Repair &amp; Troubleshooting</option>
+        <option value="AC Installation &amp; Replacement">AC Installation &amp; Replacement</option>
+        <option value="Gas Refilling &amp; Leak Repair">Gas Refilling &amp; Leak Repair</option>
+        <option value="Compressor Repair &amp; Replacement">Compressor Repair &amp; Replacement</option>
+        <option value="Thermostat &amp; Electrical Repair">Thermostat &amp; Electrical Repair</option>
+        <option value="Emergency AC Services">Emergency AC Services</option>
+        <option value="Preventive Maintenance Contracts">Preventive Maintenance Contracts</option>
+      </select>
+
+      <label for="customer-message">Additional Details (Optional)</label>
+      <textarea id="customer-message" name="message" placeholder="Describe your issue or request here..."></textarea>
+
+      <button type="submit">Submit Request</button>
+    </form>
+    <div id="confirmation-message" role="alert" aria-live="polite"></div>
+  </section>
+</main>
+<footer>
+  &copy; 2024 Mohd Alfaiz AC Service &amp; Repairing. All rights reserved.
+</footer>
+
+<script>
+  (function(){
+    const form = document.getElementById('contact-form');
+    const confirmation = document.getElementById('confirmation-message');
+    const STORAGE_KEY = 'mohd_alfaiz_ac_service_requests';
+
+    function loadRequests() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return [];
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return [];
+      }
+    }
+
+    function saveRequests(requests) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
+    }
+
+    function showConfirmation(msg) {
+      confirmation.textContent = msg;
+      confirmation.style.display = 'block';
+      setTimeout(() => {
+        confirmation.style.display = 'none';
+      }, 7000);
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      confirmation.style.display = 'none';
+      confirmation.textContent = '';
+
+      const formData = new FormData(form);
+      const name = formData.get('name').trim();
+      const phone = formData.get('phone').trim();
+      const email = formData.get('email').trim();
+      const service = formData.get('service');
+      const message = formData.get('message').trim();
+
+      if(!name || !phone || !email || !service) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      // Basic phone validation for digits, spaces, +, -, min 7 chars
+      const phoneRegex = /^[+\d\s\-]{7,}$/;
+      if(!phoneRegex.test(phone)) {
+        alert('Please enter a valid phone number.');
+        return;
+      }
+
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if(!emailRegex.test(email)) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+      const request = {
+        id: '_' + Math.random().toString(36).substr(2,9),
+        name,
+        phone,
+        email,
+        service,
+        message,
+        submittedAt: new Date().toISOString()
+      };
+
+      const requests = loadRequests();
+      requests.push(request);
+      saveRequests(requests);
+
+      form.reset();
+      showConfirmation('Thank you, ' + name + '. Your service request has been received!');
+    });
+
+    // Navbar active link switching based on scroll
+    const navLinks = document.querySelectorAll('nav a');
+    const sections = {
+      home: document.getElementById('home'),
+      services: document.getElementById('services'),
+      contact: document.getElementById('contact')
+    };
+
+    function updateActiveLink() {
+      const scrollPos = window.scrollY + 120; // offset for navbar height
+
+      let currentSection = 'home';
+      if (scrollPos >= sections.contact.offsetTop) {
+        currentSection = 'contact';
+      } else if (scrollPos >= sections.services.offsetTop) {
+        currentSection = 'services';
+      }
+
+      navLinks.forEach(link => {
+        if (link.getAttribute('href') === '#' + currentSection) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveLink);
+    window.addEventListener('load', updateActiveLink);
+
+    // Smooth scroll for internal links
+    navLinks.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').slice(1);
+        const target = document.getElementById(targetId);
+        if(target){
+          window.scrollTo({
+            top: target.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  })();
+</script>
+</body>
+</html>
+
+
